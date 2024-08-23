@@ -1,11 +1,10 @@
 import { config } from './config.js';
 import * as util from './util.js';
-export let chapterDicts: Record<string, string> = {};
+export let chapterDicts: Record<string, Record<string, string>> = {};
 export let nameDicts: Record<string, string> = {};
 
 
 export function Init() {
-
     const url1 = config.transGameNovelCharaNameUrl;
     util.androidhttpGet(url1, (respdata) => nameDicts = respdata);
     const url2 = config.transGameNovelCharaSubNameUrl;

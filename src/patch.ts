@@ -140,8 +140,8 @@ Il2Cpp.perform(() => {
         // invoke original method(Postfix)
         let result = this.method("DeleteRuby").invoke();
         if (TMPTranslateFont) {
-            if (!this.method<Il2Cpp.Object>("get_CharaName").invoke().isNull) this.method<Il2Cpp.Object>("get_CharaName").invoke().method("set_font").invoke(TMPTranslateFont);
-            if (!this.method<Il2Cpp.Object>("get_Message").invoke().isNull) this.method<Il2Cpp.Object>("get_Message").invoke().method("set_font").invoke(TMPTranslateFont);
+            if (!this.method<Il2Cpp.Object>("get_CharaName").invoke().isNull()) this.method<Il2Cpp.Object>("get_CharaName").invoke().method("set_font").invoke(TMPTranslateFont);
+            if (!this.method<Il2Cpp.Object>("get_Message").invoke().isNull()) this.method<Il2Cpp.Object>("get_Message").invoke().method("set_font").invoke(TMPTranslateFont);
         }
         return result;
     }
