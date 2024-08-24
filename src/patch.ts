@@ -59,7 +59,6 @@ Il2Cpp.perform(() => {
 
             let full = "";
 
-            //FIXME:when name or text not in dicts,game will freeze.also in bepinex implementation.
             const name_replace = Translation.nameDicts[name];
             if (name_replace !== undefined) {
                 full = !name_replace.trim() ? text : name_replace;
@@ -67,11 +66,11 @@ Il2Cpp.perform(() => {
 
             const text_replace = Translation.chapterDicts[currentAdvId][text];
             if (text_replace !== undefined) {
-                let final_text = "「" + text_replace.substring(1, text_replace.length - 2).replace("「", "『").replace("」", "』") + "」";
+                let final_text = "「" + text_replace.substring(1, text_replace.length - 1).replace("「", "『").replace("」", "』") + "」";
                 full += final_text;
             }
 
-            line = full;
+            if (full) line = full;
         } else {
             const text_replace = Translation.chapterDicts[currentAdvId][line];
             if (text_replace !== undefined) {
