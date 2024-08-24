@@ -1,5 +1,5 @@
 export let config = {
-    "fontName": "",
+    "fontName": "fakepearl-medium",
     "transGameNovelCharaNameUrl": "https://translation.lolida.best/download/imys/imys_name/zh_Hant/?format=json",
     "transGameNovelCharaSubNameUrl": "https://translation.lolida.best/download/imys/imys_subname/zh_Hant/?format=json",
     "transGameNovelChapterUrl": (label) => {
