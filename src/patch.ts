@@ -1,14 +1,14 @@
 
 import * as gameClass from "./gameClass.js";
 import * as Translation from "./translation.js";
-import {config} from "./config.js"
+import { config } from "./config.js"
 
 import { isFileExists, SysOpenFile2Byte } from "./util.js";
 
 export var TMPTranslateFont;
 export let ConfigPath: string;
 
-setTimeout(Translation.Init,5000); //for frida-gadget,some functions need to wait.
+setTimeout(Translation.Init, 5000); //for frida-gadget,some functions need to wait.
 
 let fontName = config.fontName;
 var fontPath;

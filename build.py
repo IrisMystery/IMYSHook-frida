@@ -3,8 +3,8 @@ import subprocess
 import shutil
 import os
 import requests
-apkUrl = 'https://dl-app.games.dmm.com/android/jp.co.dmm.dmmgames.imys_r'
 
+apkUrl = 'https://dl-app.games.dmm.com/android/jp.co.dmm.dmmgames.imys_r'
 apk_file = 'imys_r.apk'
 
 
