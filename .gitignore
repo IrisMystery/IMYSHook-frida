@@ -2,6 +2,7 @@ package-lock.json
 dist/
 node_modules/
 imys_r_programdata/
-frida/
 imys_r.apk
 imys.keystore
+frida/*
+!frida/libgadget.config.so
