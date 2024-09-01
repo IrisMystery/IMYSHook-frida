@@ -1,0 +1,107 @@
+name: APK Version Check and Build
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  check_apk_version:
+    runs-on: ubuntu-latest
+    outputs:
+      match: ${{ steps.compare_versions.outputs.match }}
+      release_version: ${{ steps.get_release_version.outputs.release_version }}
+      apk_version: ${{ steps.get_apk_version.outputs.apk_version }}
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Dependenices
+      run: |
+        sudo apt update
+        sudo apt install jq android-sdk-build-tools -y
+
+    - name: Download APK
+      run: |
+        wget -O imys_r.apk https://dl-app.games.dmm.com/android/jp.co.dmm.dmmgames.imys_r
+
+    - name: Get the last release version
+      id: get_release_version
+      run: |
+        last_release=$(curl -s https://api.github.com/repos/irisMystery/IMYSHook-frida/releases/latest --header "Authorization: Bearer ${{ github.token }}" | jq -r '.tag_name')
+        echo "release_version=$last_release" >> $GITHUB_OUTPUT
+
+    - name: Get APK version
+      id: get_apk_version
+      run: |
+        apk_version=$(aapt dump badging imys_r.apk | grep "versionName=" | sed "s/.*versionName='\([^']*\)'.*/\1/")
+        echo "apk_version=$apk_version" >> $GITHUB_OUTPUT
+
+    - name: Compare versions
+      id: compare_versions
+      run: |
+        release_version=${{ steps.get_release_version.outputs.release_version }}
+        apk_version=${{ steps.get_apk_version.outputs.apk_version }}
+        release_version_game=$(echo $release_version |  sed -E 's/.*-v([0-9]+\.[0-9]+\.[0-9]+)$/\1/')
+        if [ "$release_version_game" != "$apk_version" ]; then
+          echo "match=false" >> $GITHUB_OUTPUT
+        else
+          echo "match=true" >> $GITHUB_OUTPUT
+        fi
+
+  build_and_release:
+    permissions:
+      contents: write
+    needs: check_apk_version
+    if: needs.check_apk_version.outputs.match == 'false'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Install Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        
+    - name: Install Node
+      uses: actions/setup-node@v4
+      with:
+        node-version: latest
+
+    - name: Install Java
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin' # See 'Supported distributions' for available options
+        java-version: '21'
+
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v3
+
+    - name: Install Dependenices
+      run: |
+        sudo apt update
+        sudo apt install gzip apktool -y
+        python -m pip install -r requirements.txt --user
+        npm i
+
+    - name: Get Frida
+      run: |
+        curl -L -o gadget-android-arm64.so.gz "https://github.com/hzzheyang/strongR-frida-android/releases/download/16.4.10/hluda-gadget-16.4.10-android-arm64.so.gz"
+        gzip -d gadget-android-arm64.so.gz
+        cp gadget-android-arm64.so ./frida/gadget-android-arm64.so
+    
+    - name: Run build script
+      env:
+        KEYSTORE: ${{secrets.KEYSTORE}}
+      run: |
+        python build.py
+      
+    - name: Upload APK to release
+      env:
+        APK_VERSION: ${{ needs.check_apk_version.outputs.apk_version }}
+        GH_TOKEN: ${{ github.token }}
+      run: |
+        program_version="v0.9.0"
+        new_version="${program_version}-game-v${APK_VERSION}"
+        gh release create $new_version dist/imys_r.apk 
