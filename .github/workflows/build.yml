@@ -3,7 +3,7 @@ name: APK Version Check and Build
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 7 * * *' # when usually apk is updated
 
 jobs:
   check_apk_version:
@@ -72,7 +72,7 @@ jobs:
     - name: Install Java
       uses: actions/setup-java@v4
       with:
-        distribution: 'temurin' # See 'Supported distributions' for available options
+        distribution: 'temurin' 
         java-version: '21'
 
     - name: Setup Android SDK
