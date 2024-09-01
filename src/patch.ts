@@ -3,40 +3,22 @@ import * as gameClass from "./gameClass.js";
 import * as Translation from "./translation.js";
 import { config } from "./config.js"
 
-import { isFileExists, SysOpenFile2Byte } from "./util.js";
-
 export var TMPTranslateFont;
 export let ConfigPath: string;
 
 setTimeout(Translation.Init, 5000); //for frida-gadget,some functions need to wait.
 
-let fontName = config.fontName;
 var fontPath;
 let currentAdvId;
 
 Il2Cpp.perform(() => {
-    ConfigPath = gameClass.DmmABmanager.method<Il2Cpp.String>("GetAssetDataPath").invoke().toString().slice(1, -1); // original string includes ""
-    fontPath = ConfigPath + '/' + fontName
+    ConfigPath = gameClass.DmmABmanager.method<Il2Cpp.String>("GetAssetDataPath").invoke().toString().slice(1, -1);
 });
 
 // Hook NovelRoot.Start
 Il2Cpp.perform(() => {
     gameClass.NovelRoot.method("Start").implementation = function () {
-        if (isFileExists(fontPath)) {
-            // the unity libs of bepinex which was used does not match the lib of game,so there is no LoadFromFile method.
-            // this works but extremely slow and will timeout if in attaching.
-            // abfilebytes = Il2Cpp.array(Il2Cpp.corlib.class('System.Byte'),abfile);  
-            SysOpenFile2Byte(fontPath, (callback: Il2Cpp.Array<UInt64>) => {
-                let abfilebytes = callback;
-                let ab = gameClass.AssetBundle.method<Il2Cpp.Object>("LoadFromMemory").invoke(abfilebytes);
-                TMPTranslateFont = ab.method<Il2Cpp.Object>("LoadAsset").inflate(gameClass.TMP_FontAsset).invoke(Il2Cpp.string(fontName + " SDF"));
-                ab.method("Unload").invoke(false);
-            });
-
-        }
-        else {
-            console.error("font not found");
-        }
+        TMPTranslateFont =Il2Cpp.gc.choose(gameClass.AssetManager)[0].method<Il2Cpp.Object>("GetAsset").inflate(gameClass.TMP_FontAsset).invoke(Il2Cpp.string("common/fonts/fakepearl-medium sdf"),Il2Cpp.string("fakepearl-medium sdf"));
         currentAdvId = this.method<Il2Cpp.Object>("get_Linker").invoke().method<Il2Cpp.String>("get_ScenarioId").invoke().toString().slice(1, -1);;
         console.log(currentAdvId);
 

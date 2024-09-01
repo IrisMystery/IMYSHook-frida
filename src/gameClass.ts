@@ -17,6 +17,7 @@ export let UnityWebRequest: Il2Cpp.Class;
 export let MessageScrollView: Il2Cpp.Class;
 export let ChoicesContent: Il2Cpp.Class;
 export let TextRoot: Il2Cpp.Class;
+export let AssetManager: Il2Cpp.Class;
 
 Il2Cpp.perform(() => {
     Csharp = Il2Cpp.domain.assembly("Assembly-CSharp").image;
@@ -35,5 +36,6 @@ Il2Cpp.perform(() => {
     MessageScrollView = Csharp.class("Hachiroku.Novel.UI.MessageScrollView");
     ChoicesContent = Csharp.class("Hachiroku.Novel.UI.ChoicesContent");
     TextRoot = Csharp.class("Hachiroku.Novel.UI.TextRoot");
+    AssetManager = Csharp.class("Hachiroku.AssetManager")
 }
 );
