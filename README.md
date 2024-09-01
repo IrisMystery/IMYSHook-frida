@@ -18,7 +18,7 @@ Frida-gadget (放入frida/gadget-android-arm64.so)
 Android SDK Build Tools (需要在$PATH中)
 
 ```shell
-npm i install
+npm i
 pip install -r requirements.txt
 python build.py
 ```
