@@ -3,5 +3,6 @@ export let config = {
     "transGameNovelCharaSubNameUrl": "https://translation.lolida.best/download/imys/imys_subname/zh_Hant/?format=json",
     "transGameNovelChapterUrl": (label) => {
         return `https://translation.lolida.best/download/imys/${label}/zh_Hant/?format=json`
-    }
+    },
+    "fontName": "notosanscjktc",
 }

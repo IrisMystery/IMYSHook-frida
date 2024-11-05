@@ -6,3 +6,4 @@ imys_r.apk
 imys.keystore
 frida/*
 !frida/libgadget.config.so
+res/notosanscjktc

@@ -2,9 +2,10 @@
 import * as gameClass from "./gameClass.js";
 import * as Translation from "./translation.js";
 import { config } from "./config.js"
+import { isFileExists, SysOpenFile2Byte } from "./util.js";
 
 export var TMPTranslateFont;
-export let ConfigPath: string;
+export let AssetPath: string;
 
 setTimeout(Translation.Init, 5000); //for frida-gadget,some functions need to wait.
 
@@ -12,19 +13,29 @@ var fontPath;
 let currentAdvId;
 
 Il2Cpp.perform(() => {
-    ConfigPath = gameClass.DmmABmanager.method<Il2Cpp.String>("GetAssetDataPath").invoke().toString().slice(1, -1);
+    AssetPath = gameClass.DmmABmanager.method<Il2Cpp.String>("GetAssetDataPath").invoke().content;
+    fontPath = `${AssetPath}/il2cpp/${config.fontName}`
 });
 
 // Hook NovelRoot.Start
 Il2Cpp.perform(() => {
     gameClass.NovelRoot.method("Start").implementation = function () {
-        TMPTranslateFont =Il2Cpp.gc.choose(gameClass.AssetManager)[0].method<Il2Cpp.Object>("GetAsset").inflate(gameClass.TMP_FontAsset).invoke(Il2Cpp.string("common/fonts/fakepearl-medium sdf"),Il2Cpp.string("fakepearl-medium sdf"));
-        currentAdvId = this.method<Il2Cpp.Object>("get_Linker").invoke().method<Il2Cpp.String>("get_ScenarioId").invoke().toString().slice(1, -1);;
+        if (isFileExists(fontPath)) {
+            // the unity libs of bepinex which are used does not match the lib of game,so there is no LoadFromFile method.
+            SysOpenFile2Byte(fontPath, (callback: Il2Cpp.Array<UInt64>) => {
+                let abfilebytes = callback;
+                let ab = gameClass.AssetBundle.method<Il2Cpp.Object>("LoadFromMemory").invoke(abfilebytes);
+                TMPTranslateFont = ab.method<Il2Cpp.Object>("LoadAsset").inflate(gameClass.TMP_FontAsset).invoke(Il2Cpp.string(config.fontName + " SDF"));
+                ab.method("Unload").invoke(false);
+            });
+        }
+        else {
+            console.error("font not found");
+        }
+        currentAdvId = this.method<Il2Cpp.Object>("get_Linker").invoke().method<Il2Cpp.String>("get_ScenarioId").invoke().content;
         console.log(currentAdvId);
 
         Translation.FetchChapterTranslation(currentAdvId);
-
-
         // invoke original method(Prefix)
         return this.method("Start").invoke();
     }
@@ -33,7 +44,7 @@ Il2Cpp.perform(() => {
 // Hook Novel_SetMssageCommand
 Il2Cpp.perform(() => {
     gameClass.BurikoParseScript.method("_SetMssageCommand").implementation = function (lineNum, oline: Il2Cpp.String, isSelectedCaseArea, caseCount) {
-        let line = oline.toString().slice(1, -1);
+        let line = oline.content;
         if (Translation.chapterDicts.hasOwnProperty(currentAdvId) && line.includes("「") && line.endsWith("」")) {
             const idx = line.indexOf("「");
             const name = line.substring(0, idx);
@@ -68,7 +79,7 @@ Il2Cpp.perform(() => {
 // Hook Novel_ToParamList
 Il2Cpp.perform(() => {
     gameClass.BurikoParseScript.method("_ToParamList").implementation = function (oparam: Il2Cpp.String) {
-        var param = oparam.toString().slice(1, -1);
+        var param = oparam.content;
         const re = /{(.*)}/;
         const match = param.match(re);
         if (match) {
