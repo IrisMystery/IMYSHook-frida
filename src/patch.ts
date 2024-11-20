@@ -8,7 +8,13 @@ export var TMPTranslateFont;
 
 setTimeout(Translation.Init, 5000); //for frida-gadget,some functions need to wait.
 
-var fontPath = Il2Cpp.application.dataPath + `/il2cpp/${config.fontName}`
+var fontPath;
+
+setTimeout(() => {
+    fontPath = `${Il2Cpp.application.dataPath}/il2cpp/${config.fontName}` // ".dataPath" need to wait in frida-server spawn mode. upstream bug?
+}, 5000);
+
+
 let currentAdvId;
 
 // Hook NovelRoot.Start
@@ -19,6 +25,12 @@ Il2Cpp.perform(() => {
             SysOpenFile2Byte(fontPath, (callback: Il2Cpp.Array<UInt64>) => {
                 let abfilebytes = callback;
                 let ab = gameClass.AssetBundle.method<Il2Cpp.Object>("LoadFromMemory").invoke(abfilebytes);
+                if (ab.isNull()) {
+                    console.error("[LoadFromMemory] font load failed.");
+                    //need to reload every time,or the characters will become blank.
+                    TMPTranslateFont = null;
+                    return this.method("Start").invoke();
+                }
                 TMPTranslateFont = ab.method<Il2Cpp.Object>("LoadAsset").inflate(gameClass.TMP_FontAsset).invoke(Il2Cpp.string(config.fontName + " SDF"));
                 ab.method("Unload").invoke(false);
             });
@@ -39,30 +51,35 @@ Il2Cpp.perform(() => {
 Il2Cpp.perform(() => {
     gameClass.BurikoParseScript.method("_SetMssageCommand").implementation = function (lineNum, oline: Il2Cpp.String, isSelectedCaseArea, caseCount) {
         let line = oline.content;
-        if (Translation.chapterDicts.hasOwnProperty(currentAdvId) && line.includes("「") && line.endsWith("」")) {
-            const idx = line.indexOf("「");
-            const name = line.substring(0, idx);
-            const text = line.substring(idx);
+        if (Translation.chapterDicts.hasOwnProperty(currentAdvId)) {
+            if (line.includes("「") && line.endsWith("」")) {
+                const idx = line.indexOf("「");
+                const name = line.substring(0, idx);
+                const text = line.substring(idx);
 
-            let full = "";
+                let full = "";
 
-            const name_replace = Translation.nameDicts[name];
-            if (name_replace !== undefined) {
-                full = !name_replace.trim() ? text : name_replace;
+                const name_replace = Translation.nameDicts[name];
+                if (name_replace !== undefined) {
+                    full = !name_replace.trim() ? text : name_replace;
+                }
+
+                const text_replace = Translation.chapterDicts[currentAdvId][text];
+                if (text_replace !== undefined) {
+                    let final_text = "「" + text_replace.substring(1, text_replace.length - 1).replace("「", "『").replace("」", "』") + "」";
+                    full += final_text;
+                }
+
+                if (full) line = full;
+            } else {
+                const text_replace = Translation.chapterDicts[currentAdvId][line];
+                if (text_replace !== undefined) {
+                    line = text_replace.replace("「", "『").replace("」", "』");
+                }
             }
-
-            const text_replace = Translation.chapterDicts[currentAdvId][text];
-            if (text_replace !== undefined) {
-                let final_text = "「" + text_replace.substring(1, text_replace.length - 1).replace("「", "『").replace("」", "』") + "」";
-                full += final_text;
-            }
-
-            if (full) line = full;
-        } else {
-            const text_replace = Translation.chapterDicts[currentAdvId][line];
-            if (text_replace !== undefined) {
-                line = text_replace.replace("「", "『").replace("」", "』");
-            }
+        }
+        else {
+            console.error("chapter not found");
         }
         // invoke original method(Prefix)
         return this.method("_SetMssageCommand").invoke(lineNum, Il2Cpp.string(line), isSelectedCaseArea, caseCount);
