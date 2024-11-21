@@ -41,9 +41,11 @@ Il2Cpp.perform(() => {
         currentAdvId = this.method<Il2Cpp.Object>("get_Linker").invoke().method<Il2Cpp.String>("get_ScenarioId").invoke().content;
         console.log(currentAdvId);
 
-        Translation.FetchChapterTranslation(currentAdvId);
-        // invoke original method(Prefix)
-        return this.method("Start").invoke();
+        Translation.FetchChapterTranslation(currentAdvId).then(() => {
+            // invoke original method(Prefix)
+            return this.method("Start").invoke();
+        }
+        );
     }
 })
 

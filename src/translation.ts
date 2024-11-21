@@ -4,14 +4,15 @@ export let chapterDicts: Record<string, Record<string, string>> = {};
 export let nameDicts: Record<string, string> = {};
 
 
-export function Init() {
+export async function Init() {
     const url1 = config.transGameNovelCharaNameUrl;
-    util.androidhttpGet(url1, (respdata) => nameDicts = respdata);
+    nameDicts = await util.androidhttpGet(url1);
     const url2 = config.transGameNovelCharaSubNameUrl;
-    util.androidhttpGet(url2, (respdata) => Object.assign(nameDicts, respdata));
+    let respdata = await util.androidhttpGet(url2);
+    Object.assign(nameDicts, respdata);
 }
 
-export function FetchChapterTranslation(label) {
+export async function FetchChapterTranslation(label) {
     const url = config.transGameNovelChapterUrl(label);
-    util.androidhttpGet(url, (respdata) => chapterDicts[label] = respdata);
+    chapterDicts[label] = await util.androidhttpGet(url);
 }
