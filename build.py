@@ -13,7 +13,7 @@ is_windows = platform.system() == 'Windows'
 
 
 def process_apk():
-    subprocess.run(['apktool', 'd', '-f', '-r', apk_file, '-o', './imys_r_programdata'], check=True, shell=is_windows)
+    subprocess.run(['apktool', 'd', '-f', '-r', '-s', apk_file, '-o', './imys_r_programdata'], check=True, shell=is_windows)
     shutil.rmtree('./imys_r_programdata/lib/armeabi-v7a')  # remove unsupported armv7
     shutil.copy('./frida/gadget-android-arm64.so', './imys_r_programdata/lib/arm64-v8a/libgadget.so')
     shutil.copy('./frida/libgadget.config.so', './imys_r_programdata/lib/arm64-v8a/libgadget.config.so')
