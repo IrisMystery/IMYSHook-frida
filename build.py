@@ -1,4 +1,4 @@
-import lief
+import glob
 import subprocess
 import shutil
 import os
@@ -11,16 +11,42 @@ apk_file = './imys_r.apk'
 fontName = 'notosanscjktc'
 is_windows = platform.system() == 'Windows'
 
+# smali inject
+inject_code = """invoke-direct {p0}, Landroid/app/Activity;-><init>()V
+    const-string v0, "gadget"
+    invoke-static {v0}, Ljava/lang/System;->loadLibrary(Ljava/lang/String;)V
+"""
 
-def process_apk():
-    subprocess.run(['apktool', 'd', '-f', '-r', '-s', apk_file, '-o', './imys_r_programdata'], check=True, shell=is_windows)
-    shutil.rmtree('./imys_r_programdata/lib/armeabi-v7a')  # remove unsupported armv7
+
+def process_apk(method='lief'):
+    """
+    Args:
+        method (str, optional): Can be 'JNI' or 'lief'. Defaults to 'lief'.Can be set by environment variable 'app_inject_method'.
+    """
+    match method:
+        case 'lief':
+            import lief
+            subprocess.run(['apktool', 'd', '-f', '-r', '-s', apk_file, '-o', './imys_r_programdata'], check=True, shell=is_windows)
+            lib = lief.parse('./imys_r_programdata/lib/arm64-v8a/libil2cpp.so')
+            lib.add_library('libgadget.so')
+            lib.write('./imys_r_programdata/lib/arm64-v8a/libil2cpp.so')
+        case 'JNI':
+            subprocess.run(['apktool', 'd', '-f', '-r', apk_file, '-o', './imys_r_programdata'], check=True, shell=is_windows)
+            target_smali = glob.glob('./imys_r_programdata/*/com/unity3d/player/UnityPlayerActivity.smali')[0]
+            with open(target_smali, 'r+') as f:
+                text = f.read()
+                text = text.replace('invoke-direct {p0}, Landroid/app/Activity;-><init>()V', inject_code)
+                f.seek(0)
+                f.write(text)
+                f.truncate()
+        case _:
+            raise ValueError('Invalid method')
+
     shutil.copy('./frida/gadget-android-arm64.so', './imys_r_programdata/lib/arm64-v8a/libgadget.so')
     shutil.copy('./frida/libgadget.config.so', './imys_r_programdata/lib/arm64-v8a/libgadget.config.so')
     shutil.copy('./dist/_.js', './imys_r_programdata/lib/arm64-v8a/libgadget.js.so')
-    lib = lief.parse('./imys_r_programdata/lib/arm64-v8a/libil2cpp.so')
-    lib.add_library('libgadget.so')
-    lib.write('./imys_r_programdata/lib/arm64-v8a/libil2cpp.so')
+
+    shutil.rmtree('./imys_r_programdata/lib/armeabi-v7a')  # remove unsupported armv7
     # copy fonts
     if not os.path.exists(f"./res/{fontName}"):
         os.makedirs("./res", exist_ok=True)
@@ -46,7 +72,7 @@ def main():
         with open(apk_file, 'wb') as f:
             f.write(response.content)
     subprocess.run(['npm', 'run', 'build'], check=True, shell=is_windows)
-    process_apk()
+    process_apk(method=os.environ.get('app_inject_method', 'lief'))
 
 
 if __name__ == '__main__':
