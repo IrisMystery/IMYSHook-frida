@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as gameClass from "./gameClass.js";
+import Java from "frida-java-bridge"
 
 export function isFileExists(path) {
     try {

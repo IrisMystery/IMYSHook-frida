@@ -1,3 +1,5 @@
+import Java from "frida-java-bridge"
+
 function logInAndroid(log) {
     Java.perform(() => {
         let Log = Java.use("android.util.Log");
