@@ -38,8 +38,15 @@ function logInAndroid(log) {
 
 import "frida-il2cpp-bridge";
 
-Il2Cpp.installExceptionListener("all")
 
 import "./gameClass.js";
-import "./patch.js";
+import { loadConfigAsync, config } from "./config.js";
+import * as patch from "./patch.js";
 
+async function main() {
+    await loadConfigAsync();
+    console.log(JSON.stringify(config, null, 2));
+    Il2Cpp.installExceptionListener("all")
+    patch.main();
+}
+main()

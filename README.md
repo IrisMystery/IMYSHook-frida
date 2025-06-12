@@ -5,7 +5,13 @@
 ## 下载
 
 见 [Releases](https://github.com/IrisMystery/IMYSHook-frida/releases)。  
-直接安装即可使用。  
+直接安装即可使用。
+> [!NOTE]
+> 如果你没有对系统应用过核心破解且安装了FANZA商店版游戏，则需要先卸载已安装的游戏。  
+
+## 配置
+
+从 v1.2.0 开始，你可以在 ```Android/data/jp.co.dmm.dmmgames_imys_r``` 中配置该mod的行为。关于配置项的说明请阅读 ```src/config.ts```。
 
 ## 编译
 

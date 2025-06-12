@@ -20,6 +20,7 @@ export let MessageScrollView: Il2Cpp.Class;
 export let ChoicesContent: Il2Cpp.Class;
 export let TextRoot: Il2Cpp.Class;
 export let AssetManager: Il2Cpp.Class;
+export let ApiManager: Il2Cpp.Class;
 
 Il2Cpp.perform(() => {
     Csharp = Il2Cpp.domain.assembly("Assembly-CSharp").image;
@@ -41,6 +42,6 @@ Il2Cpp.perform(() => {
     ChoicesContent = Csharp.class("Hachiroku.Novel.UI.ChoicesContent");
     TextRoot = Csharp.class("Hachiroku.Novel.UI.TextRoot");
     AssetManager = Csharp.class("Hachiroku.AssetManager");
-
+    ApiManager = Csharp.class("Hachiroku.ApiManager");
 }
 );
