@@ -11,7 +11,7 @@
 
 ## 配置
 
-从 v1.2.0 开始，你可以在 ```Android/data/jp.co.dmm.dmmgames_imys_r``` 中配置该mod的行为。关于配置项的说明请阅读 ```src/config.ts```。
+从 v1.2.0 开始，你可以在 ```Android/data/jp.co.dmm.dmmgames.imys_r/files/config.json``` 中配置该mod的行为。关于配置项的说明请阅读 ```src/config.ts```。
 
 ## 编译
 
