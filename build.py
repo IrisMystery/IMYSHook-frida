@@ -71,6 +71,7 @@ def main():
         response = requests.get(apkUrl)
         with open(apk_file, 'wb') as f:
             f.write(response.content)
+    os.makedirs("dist", exist_ok=True)
     subprocess.run(['npm', 'run', 'build'], check=True, shell=is_windows)
     process_apk(method=os.environ.get('app_inject_method', 'lief'))
 
