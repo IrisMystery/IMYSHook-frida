@@ -94,9 +94,9 @@ jobs:
 
       - name: Get Frida
         run: |
-          curl -L -o gadget-android-arm64.so.gz "https://github.com/Ylarod/Florida/releases/download/16.6.3/florida-gadget-16.6.3-android-arm64.so.gz"
-          gzip -d gadget-android-arm64.so.gz
-          cp gadget-android-arm64.so ./frida/gadget-android-arm64.so
+          curl -L -o frida-gadget-17.2.14-android-arm64.so.xz "https://github.com/frida/frida/releases/download/17.2.14/frida-gadget-17.2.14-android-arm64.so.xz"
+          unxz frida-gadget-17.2.14-android-arm64.so.xz
+          cp frida-gadget-17.2.14-android-arm64.so ./frida/gadget-android-arm64.so
 
       - name: Run build script
         env:
@@ -109,6 +109,6 @@ jobs:
           APK_VERSION: ${{ needs.check_apk_version.outputs.apk_version }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          program_version="v1.2.0"
+          program_version="v1.2.1"
           new_version="${program_version}-game-v${APK_VERSION}"
           gh release create $new_version dist/*.apk
