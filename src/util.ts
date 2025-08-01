@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as gameClass from "./gameClass.js";
+import { config } from "./config.js"
 import Java from "frida-java-bridge"
 
 export function isFileExists(path) {
@@ -35,8 +36,8 @@ export function androidhttpGet(targetUrl: string): Promise<any> {
                 var conn = url.openConnection();
                 conn = Java.cast(conn, HttpURLConnection);
                 conn.setRequestMethod("GET");
-                conn.setConnectTimeout(5000);
-                conn.setReadTimeout(5000);
+                conn.setConnectTimeout(config.fetchTimeout);
+                conn.setReadTimeout(config.fetchTimeout);
                 conn.setDoInput(true);
                 conn.setChunkedStreamingMode(0);
                 conn.connect();

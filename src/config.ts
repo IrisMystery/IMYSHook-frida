@@ -8,6 +8,7 @@ interface ConfigType {
     transGameNovelCharaSubNameUrl: string;
     transGameNovelChapterUrl: (label: string) => string;
     fontName: string; // if you want load other unity TMPfont assetbundle, put it into Android/data/jp.co.dmm.dmmgames.imys_r/files/il2cpp and change the filename here.
+    fetchTimeout : Number; // time allowed to fetch translation
 }
 
 const DEFAULT_CONFIG: ConfigType = {
@@ -19,6 +20,7 @@ const DEFAULT_CONFIG: ConfigType = {
         return `https://translation.lolida.best/download/imys/${label}/zh_Hant/?format=json`
     },
     "fontName": "notosanscjktc",
+    "fetchTimeout":10000,
 };
 
 export let config: ConfigType = { ...DEFAULT_CONFIG };
