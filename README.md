@@ -11,6 +11,7 @@
 ### 翻译没有生效？
 
 以下步骤可能有帮助：
+- 如果是新活动新剧情，请等待翻译文件更新。
 - 关闭miui优化，以及其他ROM若有自身可关闭的优化，请务必关闭。
 - [修改汉化apk的包名后再安装。](https://www.cnblogs.com/wxy13644813114/p/13608281.html)
 - 卸载新版ART。`adb pm uninstall com.google.android.art`。[此步骤可以仅用手机实现。](https://www.cups.moe/archives/android-adb.html)
