@@ -55,6 +55,7 @@ def process_apk(method='lief'):
     shutil.copy(f'./res/{fontName}', f'./imys_r_programdata/assets/bin/Data/Managed/{fontName}')
     subprocess.run(['apktool', 'b', './imys_r_programdata', '-f', '-o', './dist/imys_r.apk'], check=True, shell=is_windows)
     if not os.getenv("GITHUB_ACTIONS"):
+        subprocess.run(['zipalign','-f','-p', '4', 'dist/imys_r_b.apk', 'dist/imys_r.apk'], check=True, shell=is_windows)
         if not os.path.exists('imys.keystore'):
             subprocess.run(['keytool', '-genkey', '-v', '-keystore', './imys.keystore', '-alias', 'imys', '-keyalg', 'RSA', '-keysize', '2048', '-validity', '10000'], check=True, shell=is_windows)
         subprocess.run(['apksigner', 'sign', '--ks', 'imys.keystore', '--ks-pass', 'pass:123456', 'dist/imys_r.apk'], check=True, shell=is_windows)
@@ -63,6 +64,7 @@ def process_apk(method='lief'):
         keystore = os.getenv("KEYSTORE")
         with open('imys.keystore', 'wb') as f:
             f.write(base64.b64decode(keystore))
+        subprocess.run([f"{os.getenv('ANDROID_HOME')}/build-tools/{build_tools_version}/zipalign",'-f','-p', '4', 'dist/imys_r_b.apk', 'dist/imys_r.apk'], check=True)
         subprocess.run([f"{os.getenv('ANDROID_HOME')}/build-tools/{build_tools_version}/apksigner", 'sign', '--ks', 'imys.keystore', '--ks-pass', 'pass:123456', 'dist/imys_r.apk'], check=True)
 
 
