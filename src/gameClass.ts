@@ -11,6 +11,7 @@ export let DmmABmanager: Il2Cpp.Class;
 export let AssetBundle: Il2Cpp.Class;
 export let TMP_FontAsset: Il2Cpp.Class;
 export let UnityApplication: Il2Cpp.Class;
+export let UnityObject: Il2Cpp.Class;
 export let SysByte: Il2Cpp.Class;
 export let SysFile: Il2Cpp.Class;
 export let SysBinaryReader: Il2Cpp.Class;
@@ -21,6 +22,7 @@ export let ChoicesContent: Il2Cpp.Class;
 export let TextRoot: Il2Cpp.Class;
 export let AssetManager: Il2Cpp.Class;
 export let ApiManager: Il2Cpp.Class;
+export let AdvSoundPlayer: Il2Cpp.Class;
 
 Il2Cpp.perform(() => {
     Csharp = Il2Cpp.domain.assembly("Assembly-CSharp").image;
@@ -34,6 +36,7 @@ Il2Cpp.perform(() => {
     SysBinaryReader = Il2Cpp.corlib.class("System.IO.BinaryReader");
     AssetBundle = AssetBundleModule.class("UnityEngine.AssetBundle");
     UnityApplication = UnityCoreModule.class("UnityEngine.Application");
+    UnityObject = UnityCoreModule.class("UnityEngine.Object");
     TMP_FontAsset = TextMeshPro.class("TMPro.TMP_FontAsset");
     NovelRoot = Csharp.class("Hachiroku.Novel.UI.NovelRoot");
     DmmABmanager = Csharp.class("DMM.OLG.Unity.Engine.AssetBundleManager");
@@ -43,5 +46,6 @@ Il2Cpp.perform(() => {
     TextRoot = Csharp.class("Hachiroku.Novel.UI.TextRoot");
     AssetManager = Csharp.class("Hachiroku.AssetManager");
     ApiManager = Csharp.class("Hachiroku.ApiManager");
+    AdvSoundPlayer = Csharp.class("Hachiroku.Novel.AdvSoundPlayer");
 }
 );

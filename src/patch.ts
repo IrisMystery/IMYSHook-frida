@@ -157,6 +157,29 @@ function applyVersionDetectPatch() {
 
 }
 
+function applyAdvVoiceCutPatch() {
+    Il2Cpp.perform(() => {
+        gameClass.AdvSoundPlayer.method("StopSoundHelperVoice").implementation = function () {
+            if (config.DoNotVoiceCut) {
+                const novelRoot = gameClass.UnityObject.method<Il2Cpp.Object>("FindObjectOfType", 0).inflate(gameClass.NovelRoot).invoke();
+                if (novelRoot.isNull()) {
+                    return this.method("StopSoundHelperVoice").invoke();
+                }
+                let lastVoiceName = novelRoot.field<Il2Cpp.Object>("_facilitator").value.field<Il2Cpp.String>("_LastVoiceName").value;
+                if (lastVoiceName.isNull() || lastVoiceName.content.trim() === "") {
+                    return;
+                }
+                else{
+                    return this.method("StopSoundHelperVoice").invoke();
+                }
+            }
+            else{
+                return this.method("StopSoundHelperVoice").invoke();
+            }
+        }
+    })
+}
+
 export function main() {
     if (config.isFakeLatestVersion) {
         applyVersionDetectPatch();
@@ -166,6 +189,9 @@ export function main() {
         Translation.Init();
         fontPath = `${Il2Cpp.application.dataPath}/il2cpp/${config.fontName}`;
         applyTranslationPatch();
+    }
+    if(config.DoNotVoiceCut){
+        applyAdvVoiceCutPatch();
     }
 
 }

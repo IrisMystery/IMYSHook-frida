@@ -25,6 +25,7 @@
 | isFakeLatestVersion | 是否屏蔽游戏的强制更新提示。注意尽管经长期测试这应该是安全的，但依然有封号风险。                                                          |
 | isEnableTranslation | 是否启用翻译。                                                                                                                              |
 | fontName            | 自定义翻译字体。此处填写字体名称，你需要用与游戏版本相同unity生成安卓编译的TMP字体包并放在`Android/data/jp.co.dmm.dmmgames.imys_r/files/il2cpp`下。 |
+| DoNotVoiceCut       | 是否禁止游戏中的换句语音打断                                                                                                              |
 
 ## 编译
 

@@ -9,6 +9,7 @@ interface ConfigType {
     transGameNovelChapterUrl: (label: string) => string;
     fontName: string; // if you want load other unity TMPfont assetbundle, put it into Android/data/jp.co.dmm.dmmgames.imys_r/files/il2cpp and change the filename here.
     fetchTimeout : Number; // time allowed to fetch translation
+    DoNotVoiceCut: boolean; // if you don't want the game to stop the voice of the character, set it to true.
 }
 
 const DEFAULT_CONFIG: ConfigType = {
@@ -21,6 +22,7 @@ const DEFAULT_CONFIG: ConfigType = {
     },
     "fontName": "notosanscjktc",
     "fetchTimeout":10000,
+    "DoNotVoiceCut": false,
 };
 
 export let config: ConfigType = { ...DEFAULT_CONFIG };
