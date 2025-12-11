@@ -53,7 +53,7 @@ def process_apk(method='lief'):
         with open(f'./res/{fontName}', 'wb') as f:
             f.write(requests.get(f'https://github.com/IrisMystery/IMYSHook-frida/releases/download/v0.9.0/{fontName}').content)
     shutil.copy(f'./res/{fontName}', f'./imys_r_programdata/assets/bin/Data/Managed/{fontName}')
-    subprocess.run(['apktool', 'b', './imys_r_programdata', '-f', '-o', './dist/imys_r.apk'], check=True, shell=is_windows)
+    subprocess.run(['apktool', 'b', './imys_r_programdata', '-f', '-o', './dist/imys_r_b.apk'], check=True, shell=is_windows)
     if not os.getenv("GITHUB_ACTIONS"):
         subprocess.run(['zipalign','-f','-p', '4', 'dist/imys_r_b.apk', 'dist/imys_r.apk'], check=True, shell=is_windows)
         if not os.path.exists('imys.keystore'):
