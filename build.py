@@ -66,7 +66,7 @@ def process_apk(method='lief'):
             f.write(base64.b64decode(keystore))
         subprocess.run([f"{os.getenv('ANDROID_HOME')}/build-tools/{build_tools_version}/zipalign",'-f','-p', '4', 'dist/imys_r_b.apk', 'dist/imys_r.apk'], check=True)
         subprocess.run([f"{os.getenv('ANDROID_HOME')}/build-tools/{build_tools_version}/apksigner", 'sign', '--ks', 'imys.keystore', '--ks-pass', 'pass:123456', 'dist/imys_r.apk'], check=True)
-
+    os.remove('dist/imys_r_b.apk')
 
 def main():
     if not os.path.exists(apk_file):
