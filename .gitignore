@@ -7,3 +7,7 @@ imys.keystore
 frida/*
 !frida/libgadget.config.so
 res/notosanscjktc
+apktool.*
+.idea/*
+.env
+.secret
