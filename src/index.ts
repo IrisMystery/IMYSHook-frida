@@ -1,11 +1,9 @@
-import Java from "frida-java-bridge"
+import "./gameClass.js";
+import "./patch.js";
+import * as gameClass from "./gameClass";
 
-function logInAndroid(log) {
-    Java.perform(() => {
-        let Log = Java.use("android.util.Log");
-        let TAG_L = "[imyshook-frida]";
-        Log.v(TAG_L, log);
-    });
+function logToAndroid(level, text) {
+    gameClass.LogClass.method(level).invoke(Il2Cpp.string("[imyshook-frida] " + text))
 }
 
 (function hijackConsole() {
@@ -20,8 +18,7 @@ function logInAndroid(log) {
             return String(arg);
         }).join(" ");
 
-        logInAndroid(message);
-
+        logToAndroid('Log', message);
         originalLog.apply(console, args);
     };
 
@@ -33,7 +30,7 @@ function logInAndroid(log) {
             return String(arg);
         }).join(" ");
 
-        logInAndroid(`[ERROR] ${message}`);
+        logToAndroid('LogError', `[ERROR] ${message}`);
         originalError.apply(console, args);
     };
 })();

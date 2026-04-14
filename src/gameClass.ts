@@ -5,6 +5,7 @@ export let AssetBundleModule: Il2Cpp.Image;
 export let TextMeshPro: Il2Cpp.Image;
 export let UnityNetworking: Il2Cpp.Image;
 export let UnityCoreModule: Il2Cpp.Image;
+export let SystemModule: Il2Cpp.Image;
 
 export let NovelRoot: Il2Cpp.Class;
 export let DmmABmanager: Il2Cpp.Class;
@@ -15,6 +16,10 @@ export let UnityObject: Il2Cpp.Class;
 export let SysByte: Il2Cpp.Class;
 export let SysFile: Il2Cpp.Class;
 export let SysBinaryReader: Il2Cpp.Class;
+export let WebRequest: Il2Cpp.Class;
+export let SysStreamReader: Il2Cpp.Class;
+export let LogClass: Il2Cpp.Class;
+
 export let BurikoParseScript: Il2Cpp.Class;
 export let UnityWebRequest: Il2Cpp.Class;
 export let MessageScrollView: Il2Cpp.Class;
@@ -47,5 +52,11 @@ Il2Cpp.perform(() => {
     AssetManager = Csharp.class("Hachiroku.AssetManager");
     ApiManager = Csharp.class("Hachiroku.ApiManager");
     AdvSoundPlayer = Csharp.class("Hachiroku.Novel.AdvSoundPlayer");
-}
-);
+
+    SystemModule = Il2Cpp.domain.assembly("System").image;
+    WebRequest = SystemModule.class('System.Net.WebRequest');
+    SysStreamReader = Il2Cpp.corlib.class("System.IO.StreamReader");
+    LogClass = UnityCoreModule.class('UnityEngine.Debug');
+
+    LogClass.method('Log').invoke(Il2Cpp.string('[imyshook-frida] imys injector started.'));
+});
