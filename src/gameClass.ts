@@ -30,6 +30,10 @@ export let ApiManager: Il2Cpp.Class;
 export let AdvSoundPlayer: Il2Cpp.Class;
 
 Il2Cpp.perform(() => {
+    Reflect.defineProperty(Il2Cpp, "unityVersion", { value: "6000.0.68f1" });
+});
+
+Il2Cpp.perform(() => {
     Csharp = Il2Cpp.domain.assembly("Assembly-CSharp").image;
     AssetBundleModule = Il2Cpp.domain.assembly("UnityEngine.AssetBundleModule").image;
     TextMeshPro = Il2Cpp.domain.assembly("Unity.TextMeshPro").image;
