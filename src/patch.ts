@@ -187,7 +187,7 @@ export function main() {
 
     if (config.isEnableTranslation) {
         Translation.Init();
-        fontPath = `${Il2Cpp.application.dataPath}/il2cpp/${config.fontName}`;
+        fontPath = `${gameClass.UnityApplication.method<Il2Cpp.String>("get_persistentDataPath").invoke().content}/il2cpp/${config.fontName}`;
         applyTranslationPatch();
     }
     if(config.DoNotVoiceCut){
